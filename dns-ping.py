@@ -19,12 +19,12 @@ def perform_dns_query(resolver, domain, type="A"):
 def main():
     parser = argparse.ArgumentParser(description="DNS Query Ping Like Tool")
     parser.add_argument("-n", "--interval", type=float, default=1.0, help="Interval between queries in seconds")
-    parser.add_argument("-t", "--type", type=str, default="A", help="Type of Query A, MX, AAAA... ", choices=["A", "AAAA", "MX", "TXT", "SOA"])
+    parser.add_argument("-t", "--type", type=str, default="A", help="Type of Query A, MX, AAAA... ", choices=["A", "AAAA", "MX", "TXT", "SOA","NS"])
     parser.add_argument("-s", "--server", type=str, default=None, help="Server to use, default System DNS")
-    parser.add_argument("-d", "--dots", default=False, action="store_true", help="Show .! as output")
     parser.add_argument("-c", "--count", type=int, help="do n meassurements and exit")
-    parser.add_argument("-v", "--verbose", type=int, default=0, help="make it verbose")
     parser.add_argument("-l", "--lifetime", type=int, default=5, help="DNS LifeTime(out)")
+    parser.add_argument("-v", "--verbose", default=1, action="count", help="make it verbose")
+    parser.add_argument("-q", "--quiet", default=False, action="store_true", help="ignore verbose, just summary")
     parser.add_argument("domain", type=str, help="The domain to query", default="example.com")
     args = parser.parse_args()
 
@@ -39,11 +39,14 @@ def main():
     if args.server:
         resolver.nameservers = [args.server]
 
+    if args.quiet:
+        args.verbose = 0
+
     try:
-        while True:         
-            if args.count and (query_count+fail_count) >= args.count:
+        while True:
+            if args.count and (query_count + fail_count) >= args.count:
                 break
-                       
+
             query_time, r = perform_dns_query(resolver, args.domain, args.type)
 
             if query_time is not None:
@@ -53,20 +56,20 @@ def main():
                 max_time = max(max_time, query_time)
                 responses = len(r.response.answer[0].items)
 
-                if args.dots:
-                    print("!",end="",flush=True)
-                else:
+                if args.verbose == 1:
+                    print("!", end="", flush=True)
+                elif args.verbose >= 2:
                     if responses == 1:
                         print(f"{str(r.response.answer[0]):<40} dns_seq={r.response.id:<5} time={query_time:.4}s")
                     elif (responses) > 1:
                         print(f"{responses} Records dns_seq={r.response.id:<6} time={query_time:.4}s")
-                        if args.verbose:
+                        if args.verbose >= 3:
                             print(f"{r.response.answer[0]}")
             else:
                 fail_count += 1
-                if args.dots:
-                    print(".",end="",flush=True)
-                else:
+                if args.verbose >= 1:
+                    print(".", end="", flush=True)
+                elif args.verbose >= 2:
                     print(f"no response: {r}")
 
             time.sleep(args.interval)
@@ -76,7 +79,7 @@ def main():
     finally:
         print(f"\n--- {args.domain} DNS statistics ---")
         if query_count > 0:
-            print(f"{query_count} queries performed for {args.domain}, {fail_count} failed")
+            print(f"{query_count} successfull {fail_count} failed")
             print(f"rtt min/avg/max {min_time:.4f}/{total_time / query_count:.4f}/{max_time:.4f}s")
         else:
             print("No successful queries were performed.")
