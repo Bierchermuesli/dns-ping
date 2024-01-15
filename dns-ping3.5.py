@@ -49,11 +49,11 @@ def main():
                 responses = len(r.response.answer[0].items)
 
                 if responses == 1:
-                    print(f"{str(r.response.answer[0]):<40} dns_seq={r.response.id:<5} time={query_time:.4}s")
+                    print("{} dns_seq={} time={:.4f}s".format(str(r.response.answer[0]),r.response.id,query_time))
                 elif (responses) > 1:
-                    print(f"{responses} Records dns_seq={r.response.id:<5} time={query_time:.4}s")
+                    print("{} dns_seq={} time={:.4f}s".format(responses,r.response.id,query_time))
                     if args.verbose:
-                        print(f"{r.response.answer[0]}")
+                        print(r.response.answer[0])
             else:
                 print(r)
 
@@ -64,7 +64,7 @@ def main():
         print(f"\n--- {args.domain} DNS statistics ---")
         if query_count > 0:
             print("{} queries performed for {}".format(query_count, args.domain))
-            print(f"rtt min/avg/max {min_time:.4f}/{total_time / query_count:.4f}/{max_time:.4f}s")
+            print("rtt min/avg/max {:.4f}/{:.4f}/{:.4f}s".format(min_time,total_time / query_count,max_time))
         else:
             print("No successful queries were performed.")
 
