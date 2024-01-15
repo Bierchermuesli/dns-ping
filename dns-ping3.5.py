@@ -21,6 +21,7 @@ def main():
     parser.add_argument("-n", "--interval", type=float, default=1.0, help="Interval between queries in seconds")
     parser.add_argument("-t", "--type", type=str, default="A", help="Type of Query A, MX, AAAA... ", choices=["A", "AAAA", "MX", "TXT", "SOA"])
     parser.add_argument("-s", "--server", type=str, default=None, help="Server to use, default System DNS")
+    parser.add_argument("-d", "--dots", type=bool, default=False, help="Show Dots and Exclamation as output")
     parser.add_argument("-v", "--verbose", type=int, default=0, help="make it verbose")
     parser.add_argument("-l", "--lifetime", type=int, default=5, help="DNS LifeTime(out)")
     parser.add_argument("domain", type=str, help="The domain to query", default="example.com")
@@ -46,18 +47,23 @@ def main():
                 total_time += query_time
                 min_time = min(min_time, query_time)
                 max_time = max(max_time, query_time)
-                average_time = total_time / query_count
                 responses = len(r.response.answer[0].items)
 
-                if responses == 1:
-                    print("{} dns_seq={} time={:.4f}s".format(str(r.response.answer[0]), r.response.id, query_time))
-                elif (responses) > 1:
-                    print("{} dns_seq={} time={:.4f}s".format(responses, r.response.id, query_time))
-                    if args.verbose:
-                        print(r.response.answer[0])
+                if args.dots:
+                    print("!",end="",flush=True)
+                else:
+                    if responses == 1:
+                        print("{} dns_seq={} time={:.4f}s".format(str(r.response.answer[0]), r.response.id, query_time))
+                    elif (responses) > 1:
+                        print("{} dns_seq={} time={:.4f}s".format(responses, r.response.id, query_time))
+                        if args.verbose:
+                            print(r.response.answer[0])
             else:
                 fail_count += 1
-                print("no response "+str(r))
+                if args.dots:
+                    print(".",end="",flush=True)
+                else:
+                    print("no response "+str(r))
 
             time.sleep(args.interval)
 
