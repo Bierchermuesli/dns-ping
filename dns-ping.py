@@ -60,7 +60,6 @@ def main():
             time.sleep(args.interval)
 
     except KeyboardInterrupt:
-
         print(f"\n--- {args.domain} DNS statistics ---")
         if query_count > 0:
             print("{} queries performed for {}".format(query_count, args.domain))

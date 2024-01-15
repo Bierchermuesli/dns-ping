@@ -49,9 +49,9 @@ def main():
                 responses = len(r.response.answer[0].items)
 
                 if responses == 1:
-                    print("{} dns_seq={} time={:.4f}s".format(str(r.response.answer[0]),r.response.id,query_time))
+                    print("{} dns_seq={} time={:.4f}s".format(str(r.response.answer[0]), r.response.id, query_time))
                 elif (responses) > 1:
-                    print("{} dns_seq={} time={:.4f}s".format(responses,r.response.id,query_time))
+                    print("{} dns_seq={} time={:.4f}s".format(responses, r.response.id, query_time))
                     if args.verbose:
                         print(r.response.answer[0])
             else:
@@ -60,11 +60,10 @@ def main():
             time.sleep(args.interval)
 
     except KeyboardInterrupt:
-
-        print(f"\n--- {args.domain} DNS statistics ---")
+        print("\n--- {} DNS statistics ---".format(args.domain))
         if query_count > 0:
             print("{} queries performed for {}".format(query_count, args.domain))
-            print("rtt min/avg/max {:.4f}/{:.4f}/{:.4f}s".format(min_time,total_time / query_count,max_time))
+            print("rtt min/avg/max {:.4f}/{:.4f}/{:.4f}s".format(min_time, total_time / query_count, max_time))
         else:
             print("No successful queries were performed.")
 
