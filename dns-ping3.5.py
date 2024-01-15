@@ -21,7 +21,8 @@ def main():
     parser.add_argument("-n", "--interval", type=float, default=1.0, help="Interval between queries in seconds")
     parser.add_argument("-t", "--type", type=str, default="A", help="Type of Query A, MX, AAAA... ", choices=["A", "AAAA", "MX", "TXT", "SOA"])
     parser.add_argument("-s", "--server", type=str, default=None, help="Server to use, default System DNS")
-    parser.add_argument("-d", "--dots", type=bool, default=False, help="Show Dots and Exclamation as output")
+    parser.add_argument("-d", "--dots", default=False, action="store_true", help="Show .! as output")
+    parser.add_argument("-c", "--count", type=int, help="do n meassurements and exit")  
     parser.add_argument("-v", "--verbose", type=int, default=0, help="make it verbose")
     parser.add_argument("-l", "--lifetime", type=int, default=5, help="DNS LifeTime(out)")
     parser.add_argument("domain", type=str, help="The domain to query", default="example.com")
@@ -40,6 +41,8 @@ def main():
 
     try:
         while True:
+            if args.count and (query_count+fail_count) >= args.count:
+                break
             query_time, r = perform_dns_query(resolver, args.domain, args.type)
 
             if query_time is not None:
@@ -68,6 +71,8 @@ def main():
             time.sleep(args.interval)
 
     except KeyboardInterrupt:
+        pass
+    finally:
         print("\n--- {} DNS statistics ---".format(args.domain))
         if query_count > 0:
             print("{} queries performed for {}, {} failed".format(query_count, args.domain,fail_count))
