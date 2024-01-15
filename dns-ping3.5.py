@@ -9,7 +9,7 @@ import time
 def perform_dns_query(resolver, domain, type="A"):
     try:
         start_time = time.time()
-        r = resolver.resolve(domain, type)
+        r = resolver.query(domain, type)
         end_time = time.time()
         return end_time - start_time, r
     except Exception as e:
