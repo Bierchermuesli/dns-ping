@@ -19,7 +19,7 @@ def perform_dns_query(resolver, domain, type="A"):
 def main():
     parser = argparse.ArgumentParser(description="DNS Query Ping Like Tool")
     parser.add_argument("-n", "--interval", type=float, default=1.0, help="Interval between queries in seconds")
-    parser.add_argument("-t", "--type", type=str, default="A", help="Type of Query A, MX, AAAA... ", choices=["A", "AAAA", "MX", "TXT", "SOA","NS"])
+    parser.add_argument("-t", "--type", type=str, default="A", help="Type of Query A, MX, AAAA... ", choices=["A", "AAAA", "MX", "TXT", "SOA", "NS"])
     parser.add_argument("-s", "--server", type=str, default=None, help="Server to use, default System DNS")
     parser.add_argument("-c", "--count", type=int, help="do n meassurements and exit")
     parser.add_argument("-l", "--lifetime", type=int, default=5, help="DNS LifeTime(out)")
@@ -79,7 +79,7 @@ def main():
     finally:
         print(f"\n--- {args.domain} DNS statistics ---")
         if query_count > 0:
-            print(f"{query_count} successfull {fail_count} failed")
+            print(f"{query_count} successfull, {fail_count} failed, {fail_count*100/(query_count+fail_count)}% fail")
             print(f"rtt min/avg/max {min_time:.4f}/{total_time / query_count:.4f}/{max_time:.4f}s")
         else:
             print("No successful queries were performed.")

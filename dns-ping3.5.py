@@ -24,7 +24,7 @@ def main():
     parser.add_argument("-s", "--server", type=str, default=None, help="Server to use, default System DNS")
     parser.add_argument("-q", "--quiet", default=False, action="store_true", help="no output, just summary")
     parser.add_argument("-c", "--count", type=int, help="do n meassurements and exit")
-    parser.add_argument("-v", "--verbose", type=int, default=1, help="make it verbose")
+    parser.add_argument("-v", "--verbose", default=1, action="count", help="make it verbose")
     parser.add_argument("-l", "--lifetime", type=int, default=5, help="DNS LifeTime(out)")
     parser.add_argument("domain", type=str, help="The domain to query", default="example.com")
     args = parser.parse_args()
@@ -79,7 +79,7 @@ def main():
     finally:
         print("\n--- {} DNS statistics ---".format(args.domain))
         if query_count > 0:
-            print("{} successfull {} failed".format(query_count, fail_count))
+            print("{} successfull, {} failed, {}% failed".format(query_count, fail_count,fail_count*100/(query_count+fail_count)))
             print("rtt min/avg/max {:.4f}/{:.4f}/{:.4f}s".format(min_time, total_time / query_count, max_time))
         else:
             print("No successful queries were performed.")
