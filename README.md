@@ -1,15 +1,14 @@
 # dns-ping
 Ping like tool for DNS
 
-
-requires `python3-dnspython` or from pip `dnspython``
-
-
-```
+requires
+ -  `python3-dnspython` or `dnspython` from pip
+ - Python >3.6 or see 3.5 legacy version
 
 ## Example 1
 - use 0.1s intervall
 
+```
 ./dns-ping.py asdf.com -n 0.1 
 !!!!!!!!!!!!!!!!!!!^C
 --- asdf.com DNS statistics ---
@@ -18,12 +17,11 @@ rtt min/avg/max 0.0009/0.0020/0.0027s
 
 ```
 
-```
 ## Example 2
  - verbose level 1 
  - asking 1.1.1.1 instead of system resolver
  - default interval 1sec, 5sec timeout
-
+```
 ./dns-ping.py asdf.com -v -s 1.1.1.1
 asdf.com. 154 IN A 205.196.223.8         dns_seq=55554 time=0.001171s
 asdf.com. 153 IN A 205.196.223.8         dns_seq=43123 time=0.003033s
