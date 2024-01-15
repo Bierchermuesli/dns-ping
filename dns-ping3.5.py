@@ -28,6 +28,7 @@ def main():
 
     total_time = 0
     query_count = 0
+    fail_count = 0
     min_time = float("inf")
     max_time = float("-inf")
     resolver = Resolver()
@@ -55,14 +56,15 @@ def main():
                     if args.verbose:
                         print(r.response.answer[0])
             else:
-                print(r)
+                fail_count += 1
+                print("no response "+str(r))
 
             time.sleep(args.interval)
 
     except KeyboardInterrupt:
         print("\n--- {} DNS statistics ---".format(args.domain))
         if query_count > 0:
-            print("{} queries performed for {}".format(query_count, args.domain))
+            print("{} queries performed for {}, {} failed".format(query_count, args.domain,fail_count))
             print("rtt min/avg/max {:.4f}/{:.4f}/{:.4f}s".format(min_time, total_time / query_count, max_time))
         else:
             print("No successful queries were performed.")
